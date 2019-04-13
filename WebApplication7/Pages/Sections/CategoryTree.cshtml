@@ -1,0 +1,14 @@
+﻿@model CategoryNode
+
+<li>
+    <a href="#">@Model.Title</a>
+    @if (Model.Categories != null && Model.Categories.Any())
+    {
+        <ul>
+            @foreach (var c in Model.Categories)
+            {
+                @await Html.PartialAsync("Sections/CategoryTree", c);
+            }
+        </ul>
+    }
+</li>

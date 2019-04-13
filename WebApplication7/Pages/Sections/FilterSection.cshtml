@@ -1,0 +1,16 @@
+﻿@model FilterSection
+
+@if (Model != null && Model.Options != null && Model.Options.Any())
+{
+    <h3>@Model.Title</h3>
+    <ul>
+        @foreach (var option in Model.Options)
+        {
+            <li>
+                <label>
+                    <input type="checkbox" />@option.Name
+                </label>
+            </li>
+        }
+    </ul>
+}

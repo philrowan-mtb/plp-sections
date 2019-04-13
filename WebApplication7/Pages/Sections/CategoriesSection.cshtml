@@ -1,0 +1,9 @@
+﻿@model CategorySection
+
+<h2>@Model.Title</h2>
+<ul>
+    @foreach (var c in Model.Categories)
+    {
+        @await Html.PartialAsync("Sections/CategoryTree", c);
+    }
+</ul>

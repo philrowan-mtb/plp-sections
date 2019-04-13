@@ -1,0 +1,11 @@
+﻿@model IEnumerable<FilterSection>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var filter in Model)
+    {
+        <div>
+            @await Html.PartialAsync("Sections/FilterSection", filter)
+        </div>
+    }
+}

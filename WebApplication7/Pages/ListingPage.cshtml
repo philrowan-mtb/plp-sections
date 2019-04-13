@@ -1,0 +1,24 @@
+﻿@page
+@model WebApplication7.Pages.ListingPageModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ListingPage</title>
+</head>
+<body>
+
+    <div style="width:30%">
+        @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories);
+
+        @await Html.PartialAsync("Sections/FiltersSection", Model.Filters);
+    </div>
+    <div style="width:70%"></div>
+
+</body>
+</html>
