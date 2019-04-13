@@ -56,6 +56,7 @@ namespace WebApplication7
             app.UseRouting(routes =>
             {
                 routes.MapRazorPages();
+                routes.MapDefaultControllerRoute();
             });
 
             app.UseCookiePolicy();

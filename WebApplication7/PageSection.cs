@@ -1,14 +1,33 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebApplication7
-{    
+{
+    public static class Jsonify
+    {
+        public static string ToJson(this object model) => JsonConvert.SerializeObject(model);
+    }
+
+    public abstract class PageObject
+    {
+        public abstract object ClientModel { get; }
+    }
+
+    public class ProductCard
+    {
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+    }
+
     public class FilterSection
     {
         public string Title { get; set; }
         public IList<FilterOption> Options { get; set; }
+
+        public FilterSection()
+        {
+
+        }
 
         public FilterSection(string title, params string[] options)
         {
@@ -18,19 +37,32 @@ namespace WebApplication7
             {
                 foreach (var option in options)
                 {
-                     Options.Add(new FilterOption(option));
+                    Options.Add(new FilterOption(title, option));
                 }
             }
         }
     }
 
-    public class FilterOption
+    public class FilterOption : PageObject
     {
         public string Name { get; set; }
+        public string Value { get; set; }
+        public override object ClientModel { get; }
 
-        public FilterOption(string name)
+        public FilterOption()
+        {            
+        }
+
+        public FilterOption(string filterName, string filterValue)
         {
-            Name = name;
+            Name = filterName;
+            Value = filterValue;
+            ClientModel = new
+            {
+                filter_name = filterName,
+                filter_value = filterValue,
+                attribute_id = GenFu.A.Random.Next()
+            };
         }
     }
 

@@ -8,17 +8,31 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ListingPage</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listing Page</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+              crossorigin="anonymous"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
+    </environment>
+    <script src="~/js/e.js"></script>
 </head>
 <body>
 
     <div style="width:30%">
-        @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories);
+        @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories)
 
-        @await Html.PartialAsync("Sections/FiltersSection", Model.Filters);
+        @await Html.PartialAsync("Sections/FiltersSection", Model.Filters)
     </div>
-    <div style="width:70%"></div>
-
+    <div style="width:70%">
+        @await Html.PartialAsync("Sections/ProductsSection", Model.Products)
+    </div>
 </body>
 </html>
