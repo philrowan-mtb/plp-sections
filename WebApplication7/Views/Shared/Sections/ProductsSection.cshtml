@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<ProductCard>
 
+<div class="row">
 @foreach (var product in Model)
 {
-    <div style="width:30%">
+    <div class="col">
         <h4>@product.Name</h4>
         <span color="#ff2355">@product.Price.ToString("C")</span>
     </div>
 }
+</div>

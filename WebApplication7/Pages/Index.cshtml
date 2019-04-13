@@ -1,10 +1,39 @@
 ﻿@page
-@model IndexModel
+@model WebApplication7.Pages.ListingPageModel
 @{
-    ViewData["Title"] = "Home page";
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listing Page</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+              crossorigin="anonymous"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
+    </environment>
+    <script src="~/js/e.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-4">
+            @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories)
+            @await Html.PartialAsync("Sections/FiltersSection", Model.Filters)
+        </div>
+
+        <div class="col-8">
+            @await Html.PartialAsync("Sections/ProductsSection", Model.Products)
+        </div>
+    </div>
+</body>
+</html>

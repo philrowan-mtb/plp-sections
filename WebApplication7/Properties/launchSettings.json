@@ -18,7 +18,6 @@
     "WebApplication7": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "ListingPage",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

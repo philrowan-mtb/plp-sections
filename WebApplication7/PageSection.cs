@@ -13,12 +13,6 @@ namespace WebApplication7
         public abstract object ClientModel { get; }
     }
 
-    public class ProductCard
-    {
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-    }
-
     public class FilterSection
     {
         public string Title { get; set; }
