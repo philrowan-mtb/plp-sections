@@ -1,62 +1,112 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var plp = /** @class */ (function () {
-    function plp() {
-        this.host = document.createElement('span');
-        this.state = {};
+    function plp(state) {
+        this.state = state;
+        this.init();
     }
     plp.prototype.init = function () {
+        this.__initFilters();
+    };
+    // hookup event handlers to filters
+    plp.prototype.__initFilters = function () {
         var _this = this;
-        var filters = document.querySelectorAll('input[plp-type=filter]');
+        var filters = document.querySelectorAll('#plp-available-filters input[plp-type=filter]');
         filters.forEach(function (x) {
             x.addEventListener('change', function (e) {
-                var model = e.target.getAttribute('plp-model');
-                var eventDataJson = decodeHTMLEntities(model);
-                var eventData = JSON.parse(eventDataJson);
-                _this.raise('filter-changed', {
-                    bubbles: false,
-                    detail: eventData
-                });
+                console.log('filter changed...');
+                var model = _this.__getPLPModel(e);
+                var detail = __assign({}, model, { filterRemoved: !e.target['checked'], filterAdded: e.target['checked'] });
+                _this.__handleEvent('filter-changed', detail);
             });
         });
+        // todo: hookup to existing active filters coming from the server
+        var activeFilters = document.querySelectorAll('#plp-active-filters a[plp-type=filter]');
+        activeFilters.forEach(function (x) {
+            x.addEventListener('click', function (e) { return _this.onRemoveFilterClick(e); });
+        });
     };
-    plp.prototype.on = function (eventName, handler) {
-        this.host.addEventListener(eventName, handler);
-        console.debug('listen event ', eventName);
+    plp.prototype.onRemoveFilterClick = function (e) {
+        console.log('active filter removed...');
+        // stop anchor from updating url
+        e.preventDefault();
+        var model = this.__getPLPModel(e);
+        var detail = __assign({}, model, { filterRemoved: true, filterAdded: false });
+        this.__handleEvent('filter-changed', detail);
     };
-    plp.prototype.raise = function (eventName, eventData) {
-        var event = new CustomEvent(eventName, eventData);
-        console.debug('raise event', event);
-        this.__handleEvent(eventName, eventData);
-        this.host.dispatchEvent(event);
+    plp.prototype.__getPLPModel = function (e) {
+        var model = e.target.getAttribute('plp-model');
+        var eventDataJson = decodeHTMLEntities(model);
+        return JSON.parse(eventDataJson);
     };
     plp.prototype.__handleEvent = function (eventName, eventData) {
         switch (eventName) {
             case 'filter-changed':
-                this.state.filters = this.state.filters || {};
-                this.state.filters[eventData.detail.filter_name] = this.state.filters[eventData.detail.filter_name] || [];
-                this.state.filters[eventData.detail.filter_name].push(eventData.detail.filter_value);
+                var filterName = eventData.filter_name;
+                var filterValue = eventData.filter_value;
+                if (eventData.filterAdded) {
+                    this.addFilter(eventData);
+                }
+                else {
+                    this.removeFilter(eventData);
+                }
                 break;
         }
+        console.log('the new state:', this.state);
+    };
+    plp.prototype.removeFilter = function (model) {
+        console.log('remove filter', model);
+        // manage state        
+        var removeAt = this.state.filters[model.name].indexOf(model.value);
+        this.state.filters[model.name] = this.state.filters[model.name].splice(removeAt, 0);
+        // manage display                   
+        var af = document.querySelector('#plp-active-filters *[plp-id="' + model.id + '"]');
+        if (af)
+            af.remove();
+        var fi = document.querySelector('#plp-available-filters input[plp-id="' + model.id + '"]');
+        if (fi)
+            fi.checked = false;
+    };
+    plp.prototype.addFilter = function (model) {
+        var _this = this;
+        // manage state
+        console.log('add filter', model);
+        this.state.filters[model.name] = this.state.filters[model.name] || [];
+        this.state.filters[model.name].push(model.value);
+        // manage display
+        var f = document.getElementById('plp-active-filters');
+        var f2 = document.createElement('li');
+        f2.setAttribute('plp-id', model.id);
+        f2.classList.add('nav-item');
+        var a = document.createElement('a');
+        a.classList.add('nav-link');
+        a.innerHTML = 'X | ' + model.value;
+        a.href = "#";
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            _this.removeFilter(model);
+        });
+        f2.appendChild(a);
+        f.appendChild(f2);
     };
     return plp;
 }());
-function filterChange(event) {
-    console.log('filter changed:', event);
-    _plp.raise('filter-change', event);
-}
 var _plp;
-window.addEventListener('DOMContentLoaded', function (event) {
-    console.log('DOM fully loaded and parsed');
-    init();
+window.addEventListener('DOMContentLoaded', function () {
+    var stateJson = document.getElementById('plp-state').innerText;
+    var state = JSON.parse(stateJson);
+    console.log('INITIAL STATE', state);
+    _plp = new plp(state);
 });
-function init() {
-    console.debug('document loaded');
-    _plp = new plp();
-    _plp.init();
-    _plp.on('filter-change', function () { return repaint(); });
-}
-function repaint() {
-    console.log('repaint');
-}
 function decodeHTMLEntities(text) {
     var entities = [
         ['amp', '&'],

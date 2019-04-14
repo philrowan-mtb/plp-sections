@@ -7,9 +7,16 @@
     <e p="C:\Users\rowan\source\repos\WebApplication7" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive" />
       <e p="WebApplication7" t="IncludeRecursive">
+        <e p="A" t="Include">
+          <e p="GenCon.cs" t="Include" />
+        </e>
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
+        <e p="Jsonify.cs" t="Include" />
+        <e p="mo" t="Include">
+          <e p="e.ts" t="Include" />
+        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.0" t="Include">
@@ -20,26 +27,32 @@
         <e p="Pages" t="Include">
           <e p="_ViewImports.cshtml" t="Include" />
           <e p="_ViewStart.cshtml" t="Include" />
-          <e p="Error.cshtml" t="Include" />
-          <e p="Error.cshtml.cs" t="Include" />
           <e p="Index.cshtml" t="Include" />
           <e p="Index.cshtml.cs" t="Include" />
-          <e p="ListingPage.cshtml" t="Include" />
-          <e p="ListingPage.cshtml.cs" t="Include" />
-          <e p="Privacy.cshtml" t="Include" />
-          <e p="Privacy.cshtml.cs" t="Include" />
-          <e p="Shared" t="Include">
-            <e p="_CookieConsentPartial.cshtml" t="Include" />
-            <e p="_Layout.cshtml" t="Include" />
-            <e p="_ValidationScriptsPartial.cshtml" t="Include" />
-          </e>
         </e>
         <e p="PageSection.cs" t="Include" />
+        <e p="ProductCard.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
+        <e p="SortOption.cs" t="Include" />
         <e p="Startup.cs" t="Include" />
+        <e p="Views" t="Include">
+          <e p="_ViewImports.cshtml" t="Include" />
+          <e p="Shared" t="Include">
+            <e p="Sections" t="Include">
+              <e p="CategoriesSection.cshtml" t="Include" />
+              <e p="CategoryTree.cshtml" t="Include" />
+              <e p="FilterSection.cshtml" t="Include" />
+              <e p="FiltersSection.cshtml" t="Include" />
+              <e p="FiltersViewModel.cs" t="Include" />
+              <e p="HeaderSection.cshtml" t="Include" />
+              <e p="ProductSection.cshtml" t="Include" />
+              <e p="ProductsSection.cshtml" t="Include" />
+            </e>
+          </e>
+        </e>
         <e p="WebApplication7.csproj" t="IncludeRecursive" />
         <e p="wwwroot" t="Include">
           <e p="css" t="Include">
@@ -47,6 +60,8 @@
           </e>
           <e p="favicon.ico" t="Include" />
           <e p="js" t="Include">
+            <e p="e.js" t="Include" />
+            <e p="e.js.map" t="Include" />
             <e p="site.js" t="Include" />
           </e>
           <e p="lib" t="Include">

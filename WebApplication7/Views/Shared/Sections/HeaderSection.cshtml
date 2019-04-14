@@ -1,0 +1,28 @@
+﻿@model ListingPageModel
+<div class="row">
+    <div class="todo">Breadcrumbs</div>
+</div>
+<div class="row">
+    <div class="col-8">
+        <h3 class="todo">@Model.ActiveCategory <small class="text-muted todo">(product count)</small></h3>
+        @if (Model.ActiveFilters != null && Model.ActiveFilters.Any())
+        {
+            <ul class="nav nav-pills" id="plp-active-filters">
+                @foreach (var filter in Model.ActiveFilters)
+                {
+                    <li class="nav-item" plp-id="@filter.Id">
+                        <a class="nav-link" href="#" plp-type="filter" plp-model="@Html.Encode(filter.ClientModel.ToJson())">X | @filter.Value</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div class="col-4">
+        <select>
+            @foreach (var o in Model.AvailableSort)
+            {
+                <option value="@o.Title">@o.Title</option>
+            }
+        </select>
+    </div>
+</div>

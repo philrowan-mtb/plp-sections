@@ -1,14 +1,19 @@
-﻿@model FilterSection
+﻿@using WebApplication7.Views.Shared.Sections
+@model FiltersViewModel
 
-@if (Model != null && Model.Options != null && Model.Options.Any())
+@functions {
+    bool isActive(FilterOption o) => Model.ActiveFilters.Any(x => x.Id == o.Id);
+}
+
+@if (Model != null && Model.Section != null && Model.Section.Options != null && Model.Section.Options.Any())
 {
-    <h3>@Model.Title</h3>
-    <ul>
-        @foreach (var option in Model.Options)
+    <h3>@Model.Section.Title</h3>
+    <ul id="plp-available-filters">
+        @foreach (var option in Model.Section.Options)
         {
             <li>
                 <label>
-                    <input type="checkbox" plp-type="filter" plp-model='@Html.Encode(option.ClientModel.ToJson())' onchange="filterChange(event)"  />@option.Value
+                    <input type="checkbox" plp-id="@option.Id" plp-type="filter" plp-model="@Html.Encode(option.ClientModel.ToJson())" checked="@isActive(option)" />@option.Value
                 </label>
             </li>
         }

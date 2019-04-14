@@ -1,27 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using System.Collections.Generic;
 
 namespace WebApplication7
 {
-    public static class Jsonify
-    {
-        public static string ToJson(this object model) => JsonConvert.SerializeObject(model);
-    }
-
-    public abstract class PageObject
-    {
-        public abstract object ClientModel { get; }
-    }
 
     public class FilterSection
     {
         public string Title { get; set; }
         public IList<FilterOption> Options { get; set; }
-
-        public FilterSection()
-        {
-
-        }
 
         public FilterSection(string title, params string[] options)
         {
@@ -37,25 +23,23 @@ namespace WebApplication7
         }
     }
 
-    public class FilterOption : PageObject
+    public class FilterOption
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
-        public override object ClientModel { get; }
-
-        public FilterOption()
-        {            
-        }
-
+        public object ClientModel { get; }
+        
         public FilterOption(string filterName, string filterValue)
         {
+            Id = Guid.NewGuid();
             Name = filterName;
             Value = filterValue;
             ClientModel = new
             {
-                filter_name = filterName,
-                filter_value = filterValue,
-                attribute_id = GenFu.A.Random.Next()
+                name = Name,
+                value = Value,
+                id = Id
             };
         }
     }

@@ -23,8 +23,10 @@
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     </environment>
     <script src="~/js/e.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+<div class="container">
     <div class="row">
         <div class="col-4">
             @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories)
@@ -32,8 +34,13 @@
         </div>
 
         <div class="col-8">
+            @await Html.PartialAsync("Sections/HeaderSection", Model)
             @await Html.PartialAsync("Sections/ProductsSection", Model.Products)
         </div>
     </div>
+</div>
+<script id="plp-state" type="text/plp">
+    @Html.Raw(Model.State.ToJson())
+</script>
 </body>
 </html>
