@@ -11,6 +11,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var plp = /** @class */ (function () {
     function plp(state) {
+        this.apiUrl = 'https://localhost:5001/api/search/';
         this.state = state;
         this.init();
     }
@@ -51,8 +52,6 @@ var plp = /** @class */ (function () {
     plp.prototype.__handleEvent = function (eventName, eventData) {
         switch (eventName) {
             case 'filter-changed':
-                var filterName = eventData.filter_name;
-                var filterValue = eventData.filter_value;
                 if (eventData.filterAdded) {
                     this.addFilter(eventData);
                 }
@@ -61,7 +60,27 @@ var plp = /** @class */ (function () {
                 }
                 break;
         }
-        console.log('the new state:', this.state);
+        this.__applyState(this.state);
+    };
+    plp.prototype.__applyState = function (state) {
+        debugger;
+        var q = this.__convertToParams(state);
+        fetch(this.apiUrl + '?' + q).then(function (resonse) {
+            console.log(resonse);
+        });
+    };
+    plp.prototype.__convertToParams = function (state) {
+        var q = [];
+        if (state.filters) {
+            for (var _i = 0, _a = Object.getOwnPropertyNames(state.filters); _i < _a.length; _i++) {
+                var f = _a[_i];
+                var vv = state.filters[f].join('|');
+                q.push('f_' + f + '=' + vv);
+            }
+        }
+        var qs = q.join('&');
+        console.log(qs);
+        return qs;
     };
     plp.prototype.removeFilter = function (model) {
         console.log('remove filter', model);

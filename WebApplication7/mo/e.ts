@@ -7,7 +7,7 @@ interface FilterModel {
 
 class plp {
     private readonly state: any;
-
+    private readonly apiUrl = 'https://localhost:5001/api/search/';
     constructor(state) {
         this.state = state;
         this.init();
@@ -61,9 +61,7 @@ class plp {
 
     private __handleEvent(eventName: string, eventData: any) {
         switch (eventName) {
-            case 'filter-changed':
-                const filterName = eventData.filter_name;
-                const filterValue = eventData.filter_value;
+            case 'filter-changed':                
                 if (eventData.filterAdded) {
                     this.addFilter(eventData as FilterModel);
                 } else {
@@ -72,7 +70,29 @@ class plp {
                 break;
         }
 
-        console.log('the new state:', this.state);
+        this.__applyState(this.state);
+    }
+
+    private __applyState(state: any) {
+        debugger;
+        var q = this.__convertToParams(state);
+        fetch(this.apiUrl + '?' + q,
+        ).then(resonse => {
+            console.log(resonse);
+        });
+    }
+
+    private __convertToParams(state: any) {
+        let q = [];
+        if (state.filters) {
+            for (let f of Object.getOwnPropertyNames(state.filters)) {
+                let vv = (state.filters[f] as []).join('|');
+                q.push('f_' + f + '=' + vv);
+            }
+        }
+        const qs = q.join('&');
+        console.log(qs);
+        return qs;
     }
 
     removeFilter(model: FilterModel) {
@@ -98,7 +118,7 @@ class plp {
 
         // manage display
         const f = document.getElementById('plp-active-filters');
-        const f2 = document.createElement('li');        
+        const f2 = document.createElement('li');
         f2.setAttribute('plp-id', model.id);
         f2.classList.add('nav-item');
         const a = document.createElement('a');

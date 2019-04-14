@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebApplication7.Views.Shared.Sections;
+using static WebApplication7.Seeker;
 
 namespace WebApplication7.Pages
 {
@@ -10,20 +11,17 @@ namespace WebApplication7.Pages
         public IList<ProductCard> Products { get; set; }
         public CategorySection Categories { get; set; }
         public IEnumerable<FiltersViewModel> Filters { get; set; }
-        public IList<FilterOption> ActiveFilters { get; set;}
+        public IList<FilterOption> ActiveFilters { get; set; }
         public SortOption ActiveSort { get; set; }
         public IList<SortOption> AvailableSort { get; set; }
         public string ActiveCategory { get; set; }
-        
+
         public object State { get; set; }
 
         public void OnGet()
         {
-            //TODO: Parse Query string into some internal form QueryState
-            // 1: fetch products from ES based on QueryState
-            // 2: set ActiveFilters based on QueryState
-            // 3: set ActiveSort based on QueryState
-            Products = GenCon.CreateProducts(10).ToList();
+            var s = new Seeker(Request.Query);
+            Products = s.Search().ToList();
 
             Categories = new CategorySection();
             Categories.Add(new CategoryNode("Hardbaits", "Crankbaits", "Rip Baits"));
@@ -48,8 +46,8 @@ namespace WebApplication7.Pages
                 availableFilters.Add(new FilterSection(facetName.Key, uniqueValues));
             }
 
-            ActiveFilters = new List<FilterOption>();
-            ActiveFilters.Add(availableFilters.First().Options.First());
+            // TODO: build active filters from query string
+            ActiveFilters = new List<FilterOption>();            
 
             Filters = availableFilters.Select(x => new FiltersViewModel
             {
@@ -73,13 +71,13 @@ namespace WebApplication7.Pages
             var filters = ActiveFilters
                 .GroupBy(x => x.Name)
                 .ToDictionary(x => x.Key, x => x.Select(y => y.Value).ToArray());
-            
-            var state = new   
+
+            var state = new
             {
-                filters = filters                
+                filters = filters
             };
 
             State = state;
         }
-    }    
+    }
 }
