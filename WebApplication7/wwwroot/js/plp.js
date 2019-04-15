@@ -11,7 +11,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var plp = /** @class */ (function () {
     function plp(state) {
-        this.apiUrl = 'https://localhost:5001/api/search/';
+        this.apiUrl = 'http://localhost:5000/api/search/';
         this.state = state;
         this.init();
     }
@@ -91,6 +91,8 @@ var plp = /** @class */ (function () {
                         s.el.innerHTML = rs[s.name];
                     }
                 });
+                var url = location.origin + location.pathname + '?' + q;
+                history.pushState(state, '', url);
             });
         });
     };
@@ -170,4 +172,4 @@ function decodeHTMLEntities(text) {
         text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
     return text;
 }
-//# sourceMappingURL=e.js.map
+//# sourceMappingURL=plp.js.map

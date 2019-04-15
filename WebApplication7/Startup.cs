@@ -34,6 +34,11 @@ namespace WebApplication7
 
             services.AddMvc()
                 .AddNewtonsoftJson();
+
+            services.AddCors(cors =>
+            {
+                cors.AddPolicy("allow-local", Cors.AllowLocal());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,13 +55,15 @@ namespace WebApplication7
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseCors();
 
             app.UseRouting(routes =>
             {
                 routes.MapRazorPages();
-                routes.MapDefaultControllerRoute();
+                routes.MapDefaultControllerRoute().WithCorsPolicy("allow-local");
             });
 
             app.UseCookiePolicy();

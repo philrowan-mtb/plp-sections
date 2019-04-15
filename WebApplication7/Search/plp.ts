@@ -12,7 +12,7 @@ interface SectionModel {
 
 class plp {
     private readonly state: any;
-    private readonly apiUrl = 'https://localhost:5001/api/search/';
+    private readonly apiUrl = 'http://localhost:5000/api/search/';
     private sections: SectionModel[];
     constructor(state) {
         this.state = state;
@@ -108,7 +108,9 @@ class plp {
                             console.log('replacing HTML for section ' + s.name);
                             s.el.innerHTML = rs[s.name];
                         }
-                    })
+                    });
+                    let url = location.origin + location.pathname + '?' + q;
+                    history.pushState(state, '', url);
                 });
         });
     }

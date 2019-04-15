@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -23,6 +24,7 @@ namespace WebApplication7
         }
 
         [HttpGet("")]
+        [EnableCors("allow-local")]
         public IActionResult Get()
         {
             var s = new Seeker(Request.Query);
@@ -44,7 +46,7 @@ namespace WebApplication7
 
         private string Render(string sectionName, object model)
         {
-            var productsHtml = _htmlHelper.Partial("Sections/ProductsSection", model);
+            var productsHtml = _htmlHelper.Partial(sectionName, model);
             var sb = new StringBuilder();
             using (var writer = new StringWriter(sb))
             {                
@@ -56,7 +58,7 @@ namespace WebApplication7
 
         private void Contextualize()
         {
-            var viewContext = new ViewContext(ControllerContext, new FakeView(), this.ViewData, this.TempData, TextWriter.Null, new HtmlHelperOptions
+            var viewContext = new ViewContext(ControllerContext, new FakeView(), ViewData, TempData, TextWriter.Null, new HtmlHelperOptions
             {
                 ClientValidationEnabled = false,
             });            

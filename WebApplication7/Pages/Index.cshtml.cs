@@ -29,6 +29,11 @@ namespace WebApplication7.Pages
             Categories.Add(new CategoryNode("Softbaits", "Worms", "Creatures", "Fish-like things"));
             Categories.Add(new CategoryNode("Jigs", "Heads", "Skirts"));
 
+            // TODO: filters need to parse/compute before the list of products is actually filtered. 
+            // we need to show all the filters in the category. with this approach I'm just showing the filters
+            // available for the returned set of products. if those products are already filtered to e.g. Color=Red
+            // then only the Red color filter will appear.
+
             BuildFilters();
             BuildSort();
             BuildState();
@@ -59,12 +64,14 @@ namespace WebApplication7.Pages
 
         private void BuildSort()
         {
-            AvailableSort = new List<SortOption>();
-            AvailableSort.Add(new SortOption("Brand: A-Z", "Brand", "asc"));
-            AvailableSort.Add(new SortOption("Brand: Z-A", "Brand", "desc"));
-            AvailableSort.Add(new SortOption("Price: Low - High", "Price", "asc"));
-            AvailableSort.Add(new SortOption("Price: High - Low", "Price", "desc"));
-            AvailableSort.Add(new SortOption("Newest", "DateAddedToStore", "desc"));
+            AvailableSort = new List<SortOption>
+            {
+                new SortOption("Brand: A-Z", "Brand", "asc"),
+                new SortOption("Brand: Z-A", "Brand", "desc"),
+                new SortOption("Price: Low - High", "Price", "asc"),
+                new SortOption("Price: High - Low", "Price", "desc"),
+                new SortOption("Newest", "DateAddedToStore", "desc")
+            };
         }
 
         private void BuildState()
@@ -75,7 +82,7 @@ namespace WebApplication7.Pages
 
             var state = new
             {
-                filters = filters
+                filters
             };
 
             State = state;
