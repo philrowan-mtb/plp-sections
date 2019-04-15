@@ -1,0 +1,43 @@
+[1mdiff --git a/WebApplication7/Pages/Index.cshtml b/WebApplication7/Pages/Index.cshtml[m
+[1mindex 4aeb008..ddded91 100644[m
+[1m--- a/WebApplication7/Pages/Index.cshtml[m
+[1m+++ b/WebApplication7/Pages/Index.cshtml[m
+[36m@@ -17,24 +17,23 @@[m
+         <script src="http://localhost:5000/js/plp.js"></script>[m
+         <link rel="stylesheet" href="http://localhost:5000/css/site.css" />[m
+     </environment>    [m
+[31m-    [m
+ </head>[m
+ <body>[m
+[31m-<div class="container">[m
+[31m-    <div class="row">[m
+[31m-        <div class="col-4">[m
+[31m-            @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories)[m
+[31m-            @await Html.PartialAsync("Sections/FiltersSection", Model.Filters)[m
+[31m-        </div>[m
+[32m+[m[32m    <div class="container">[m
+[32m+[m[32m        <div class="row" id="plp">[m[41m            [m
+[32m+[m[32m            <div class="col-4">[m
+[32m+[m[32m                @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories)[m
+[32m+[m[32m                @await Html.PartialAsync("Sections/FiltersSection", Model.Filters)[m
+[32m+[m[32m            </div>[m
+ [m
+[31m-        <div class="col-8">[m
+[31m-            @await Html.PartialAsync("Sections/HeaderSection", Model)[m
+[31m-            @await Html.PartialAsync("Sections/ProductsSection", Model.Products)[m
+[31m-        </div>[m
+[32m+[m[32m            <div class="col-8">[m
+[32m+[m[32m                @await Html.PartialAsync("Sections/HeaderSection", Model)[m
+[32m+[m[32m                @await Html.PartialAsync("Sections/ProductsSection", Model.Products)[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        </div>[m[41m        [m
+     </div>[m
+[31m-</div>[m
+[31m-<script id="plp-state" type="text/plp">[m
+[31m-    @Html.Raw(Model.State.ToJson())[m
+[31m-</script>[m
+[32m+[m[32m    <script id="plp-state" type="text/plp">[m
+[32m+[m[32m        @Html.Raw(Model.State.ToJson())[m
+[32m+[m[32m    </script>[m[41m    [m
+ </body>[m
+ </html>[m

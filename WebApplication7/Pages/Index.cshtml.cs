@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebApplication7.Search;
@@ -24,10 +25,9 @@ namespace WebApplication7.Pages
             var s = new Seeker(Request.Query);
             Products = s.Search().ToList();
 
-            Categories = new CategorySection();
-            Categories.Add(new CategoryNode("Hardbaits", "Crankbaits", "Rip Baits"));
-            Categories.Add(new CategoryNode("Softbaits", "Worms", "Creatures", "Fish-like things"));
-            Categories.Add(new CategoryNode("Jigs", "Heads", "Skirts"));
+            
+            BuildCategories();
+
 
             // TODO: filters need to parse/compute before the list of products is actually filtered. 
             // we need to show all the filters in the category. with this approach I'm just showing the filters
@@ -37,6 +37,20 @@ namespace WebApplication7.Pages
             BuildFilters();
             BuildSort();
             BuildState();
+        }
+
+        private void BuildCategories()
+        {
+            Categories = new CategorySection();
+            var pcs = Products.Select(x => x.Category).Select(x => x.Parent);                
+            foreach (var pc in pcs)
+            {
+                if (Categories.Categories.Contains(pc))
+                {
+                    continue;
+                }
+                Categories.Add(pc);
+            }            
         }
 
         private void BuildFilters()

@@ -22,12 +22,27 @@ namespace WebApplication7.Search
             }                        
         }
 
-        private static readonly string[] _categories = new string[]{
-            "Hard bait",
-            "Soft bait",
-            "Medium bait",            
-        };
-        static string RandomCategory() => _categories[RandIndex(_categories.Length)];
+        private static readonly CategoryNode _categories = new CategoryNode("root");
+        private static readonly IList<CategoryNode> _leafs = new List<CategoryNode>();
+
+        static FakeDataGenerator() {            
+            var tackle = _categories.Add("Tackle");
+            var hardbait = tackle.Add("Hard bait");
+            _leafs.Add(hardbait.Add("Crank baits"));
+            _leafs.Add(hardbait.Add("Hard swimbaits"));
+            _leafs.Add(hardbait.Add("Rip baits"));
+
+            var softbait = tackle.Add("Soft bait");
+            _leafs.Add(softbait.Add("Worms"));
+            _leafs.Add(softbait.Add("Creatures"));
+
+            var jigs = tackle.Add("Jigs");
+            _leafs.Add(jigs.Add("Heads"));
+            _leafs.Add(jigs.Add("Skirts"));
+            _leafs.Add(jigs.Add("Rigging"));
+        }
+
+        static CategoryNode RandomCategory() => _leafs[RandIndex(_leafs.Count)];
 
         private static readonly string[] _sizes = new string[]{
             "2\"",

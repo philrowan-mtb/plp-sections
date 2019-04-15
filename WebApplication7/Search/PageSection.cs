@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace WebApplication7.Search
 {
-
     public class FilterSection
     {
         public string Title { get; set; }
@@ -65,7 +64,15 @@ namespace WebApplication7.Search
     {
         public string Title { get; set; }
 
+        public CategoryNode Parent { get; set; }
+
         public IList<CategoryNode> Categories { get; set; }
+
+        public CategoryNode(CategoryNode parent, string title, params string[] childrenNodeTitles)
+            : this(title, childrenNodeTitles)
+        {
+            Parent = parent;
+        }
 
         public CategoryNode(string title, params string[] childrenNodeTitles)
         {
@@ -75,9 +82,16 @@ namespace WebApplication7.Search
             {
                 foreach (var c in childrenNodeTitles)
                 {
-                    Categories.Add(new CategoryNode(c));
+                    Categories.Add(new CategoryNode(this, c));
                 }
             }
+        }
+
+        public CategoryNode Add(string title)
+        {
+            var node = new CategoryNode(this, title);
+            Categories.Add(node);
+            return node;
         }
     }
 }
