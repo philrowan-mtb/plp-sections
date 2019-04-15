@@ -54,6 +54,9 @@ class plp {
         });
 
         // bind click to existing active filters coming from the server
+        // todo: bind higher in the DOM and use event targeting strategy to decide what to do.
+        // PROS: 1 click handler per type (filter check, active filter, etc.) means we can bind the DOM once and let events bubble so we do not have to hookup events 
+        // when new elements are added client side
         const activeFilters = document.querySelectorAll('#plp-active-filters a[plp-type=filter]');
         activeFilters.forEach(x => {
             x.addEventListener('click', (e) => this.onRemoveFilterClick(e));

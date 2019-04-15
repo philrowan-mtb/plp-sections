@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
+using WebApplication7.Search;
 using WebApplication7.Views.Shared.Sections;
-using static WebApplication7.Seeker;
+using static WebApplication7.Search.Seeker;
 
 namespace WebApplication7.Pages
 {

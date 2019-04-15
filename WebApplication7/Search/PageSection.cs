@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebApplication7
+namespace WebApplication7.Search
 {
 
     public class FilterSection

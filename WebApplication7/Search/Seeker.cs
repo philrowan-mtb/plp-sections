@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace WebApplication7
+namespace WebApplication7.Search
 {
     public class Seeker
     {
-        private static IEnumerable<ProductCard> _products = GenCon.CreateProducts(100).ToList();
+        private static IEnumerable<ProductCard> _products = FakeDataGenerator.CreateProducts(100).ToList();
         private IQueryCollection _query;
 
         public Seeker(IQueryCollection query) => _query = query;

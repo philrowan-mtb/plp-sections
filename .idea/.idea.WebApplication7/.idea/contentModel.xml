@@ -7,16 +7,10 @@
     <e p="C:\Users\rowan\source\repos\WebApplication7" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive" />
       <e p="WebApplication7" t="IncludeRecursive">
-        <e p="A" t="Include">
-          <e p="GenCon.cs" t="Include" />
-        </e>
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Jsonify.cs" t="Include" />
-        <e p="mo" t="Include">
-          <e p="e.ts" t="Include" />
-        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.0" t="Include">
@@ -30,13 +24,19 @@
           <e p="Index.cshtml" t="Include" />
           <e p="Index.cshtml.cs" t="Include" />
         </e>
-        <e p="PageSection.cs" t="Include" />
-        <e p="ProductCard.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
-        <e p="SortOption.cs" t="Include" />
+        <e p="Search" t="Include">
+          <e p="GenCon.cs" t="Include" />
+          <e p="PageSection.cs" t="Include" />
+          <e p="plp.ts" t="Include" />
+          <e p="ProductCard.cs" t="Include" />
+          <e p="Seeker.cs" t="Include" />
+          <e p="SortOption.cs" t="Include" />
+        </e>
+        <e p="SearchController.cs" t="Include" />
         <e p="Startup.cs" t="Include" />
         <e p="Views" t="Include">
           <e p="_ViewImports.cshtml" t="Include" />

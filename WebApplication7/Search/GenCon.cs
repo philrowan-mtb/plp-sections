@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebApplication7
+namespace WebApplication7.Search
 {
-    internal static class GenCon
+    internal static class FakeDataGenerator
     {
-        private static Random _random = new Random();
+        private static readonly Random _random = new Random();
 
         public static IEnumerable<ProductCard> CreateProducts(int count)
         {            

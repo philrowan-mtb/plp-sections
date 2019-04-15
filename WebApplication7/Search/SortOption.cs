@@ -1,4 +1,4 @@
-﻿namespace WebApplication7
+﻿namespace WebApplication7.Search
 {
     public class SortOption
     {

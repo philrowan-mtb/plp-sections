@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using WebApplication7.Pages;
+using WebApplication7.Search;
 
 namespace WebApplication7
 {
@@ -30,21 +29,32 @@ namespace WebApplication7
             var products = s.Search().ToList();
 
             Contextualize();
-            var productsHtml = _htmlHelper.Partial("Sections/ProductsSection", products);
-            var sb = new StringBuilder();
-            using var writer = new StringWriter(sb);
-            productsHtml.WriteTo(writer, HtmlEncoder.Default);
+            var productsHtml = Render("Sections/ProductsSection", products);            
+
+            // TODO: render additional sections that need to change and send back the html
 
             return Ok(new
             {
                 sections = new
                 {
-                    products = sb.ToString()
+                    products = productsHtml
                 }
             });
         }
 
-        void Contextualize()
+        private string Render(string sectionName, object model)
+        {
+            var productsHtml = _htmlHelper.Partial("Sections/ProductsSection", model);
+            var sb = new StringBuilder();
+            using (var writer = new StringWriter(sb))
+            {                
+                productsHtml.WriteTo(writer, HtmlEncoder.Default);
+            }
+
+            return sb.ToString();
+        }
+
+        private void Contextualize()
         {
             var viewContext = new ViewContext(ControllerContext, new FakeView(), this.ViewData, this.TempData, TextWriter.Null, new HtmlHelperOptions
             {
