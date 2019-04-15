@@ -41,10 +41,10 @@ namespace WebApplication7
         private IEnumerable<ProductCard> Search(SearchModel model)
         {
             var qqq = _products;
-
-            if (model.Facets.Any())
+            
+            foreach (var facetQuery in model.Facets)
             {
-                qqq = qqq.Where(x => x.Facets.Any(f => model.Facets.Any(mf => mf.Name == f.Name && mf.Value == f.Value)));
+                qqq = qqq.Where(x => x.Facets.Any(f => f.Name == facetQuery.Name && f.Value == facetQuery.Value));
             }
             return qqq.Take(model.ProductCount);
         }

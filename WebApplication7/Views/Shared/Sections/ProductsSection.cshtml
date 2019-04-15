@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ProductCard>
 
-<div class="row">
+<div plp-section="products" class="row">
 @foreach (var product in Model)
 {
     @await Html.PartialAsync("Sections/ProductSection", product);

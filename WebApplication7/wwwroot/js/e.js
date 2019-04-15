@@ -16,12 +16,26 @@ var plp = /** @class */ (function () {
         this.init();
     }
     plp.prototype.init = function () {
+        this.__initSections();
         this.__initFilters();
+    };
+    plp.prototype.__initSections = function () {
+        var _this = this;
+        this.sections = [];
+        document.querySelectorAll('*[plp-section]').forEach(function (x) {
+            var sectionName = x.getAttribute('plp-section');
+            _this.sections.push({
+                el: x,
+                name: sectionName,
+            });
+        });
+        console.log('sections', this.sections);
     };
     // hookup event handlers to filters
     plp.prototype.__initFilters = function () {
         var _this = this;
         var filters = document.querySelectorAll('#plp-available-filters input[plp-type=filter]');
+        // bind change to any filter check boxes
         filters.forEach(function (x) {
             x.addEventListener('change', function (e) {
                 console.log('filter changed...');
@@ -30,7 +44,7 @@ var plp = /** @class */ (function () {
                 _this.__handleEvent('filter-changed', detail);
             });
         });
-        // todo: hookup to existing active filters coming from the server
+        // bind click to existing active filters coming from the server
         var activeFilters = document.querySelectorAll('#plp-active-filters a[plp-type=filter]');
         activeFilters.forEach(function (x) {
             x.addEventListener('click', function (e) { return _this.onRemoveFilterClick(e); });
@@ -63,10 +77,18 @@ var plp = /** @class */ (function () {
         this.__applyState(this.state);
     };
     plp.prototype.__applyState = function (state) {
-        debugger;
+        var _this = this;
         var q = this.__convertToParams(state);
-        fetch(this.apiUrl + '?' + q).then(function (resonse) {
-            console.log(resonse);
+        fetch(this.apiUrl + '?' + q).then(function (response) {
+            response.json().then(function (o) {
+                var rs = o.sections;
+                _this.sections.forEach(function (s) {
+                    if (rs.hasOwnProperty(s.name)) {
+                        console.log('replacing HTML for section ' + s.name);
+                        s.el.innerHTML = rs[s.name];
+                    }
+                });
+            });
         });
     };
     plp.prototype.__convertToParams = function (state) {
@@ -113,6 +135,8 @@ var plp = /** @class */ (function () {
         a.addEventListener('click', function (e) {
             e.preventDefault();
             _this.removeFilter(model);
+            // TODO: push this through the event pipe like all the other events
+            _this.__applyState(_this.state);
         });
         f2.appendChild(a);
         f.appendChild(f2);

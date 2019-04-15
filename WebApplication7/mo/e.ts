@@ -5,21 +5,41 @@ interface FilterModel {
     id: string;
 }
 
+interface SectionModel {
+    name: string;
+    el: Element
+}
+
 class plp {
     private readonly state: any;
     private readonly apiUrl = 'https://localhost:5001/api/search/';
+    private sections: SectionModel[];
     constructor(state) {
         this.state = state;
         this.init();
     }
 
     private init() {
+        this.__initSections();
         this.__initFilters();
+    }
+
+    private __initSections() {
+        this.sections = [];
+        document.querySelectorAll('*[plp-section]').forEach(x => {            
+            const sectionName = x.getAttribute('plp-section');
+            this.sections.push({
+                el: x,
+                name: sectionName,
+            });
+        });
+        console.log('sections', this.sections);
     }
 
     // hookup event handlers to filters
     private __initFilters() {
         const filters = document.querySelectorAll('#plp-available-filters input[plp-type=filter]');
+        // bind change to any filter check boxes
         filters.forEach(x => {
             x.addEventListener('change', (e) => {
                 console.log('filter changed...');
@@ -33,7 +53,7 @@ class plp {
             });
         });
 
-        // todo: hookup to existing active filters coming from the server
+        // bind click to existing active filters coming from the server
         const activeFilters = document.querySelectorAll('#plp-active-filters a[plp-type=filter]');
         activeFilters.forEach(x => {
             x.addEventListener('click', (e) => this.onRemoveFilterClick(e));
@@ -61,7 +81,7 @@ class plp {
 
     private __handleEvent(eventName: string, eventData: any) {
         switch (eventName) {
-            case 'filter-changed':                
+            case 'filter-changed':
                 if (eventData.filterAdded) {
                     this.addFilter(eventData as FilterModel);
                 } else {
@@ -74,11 +94,19 @@ class plp {
     }
 
     private __applyState(state: any) {
-        debugger;
         var q = this.__convertToParams(state);
         fetch(this.apiUrl + '?' + q,
-        ).then(resonse => {
-            console.log(resonse);
+        ).then(response => {
+            response.json().then(
+                o => {                    
+                    const rs = o.sections as Object;
+                    this.sections.forEach(s => {
+                        if (rs.hasOwnProperty(s.name)) {
+                            console.log('replacing HTML for section ' + s.name);
+                            s.el.innerHTML = rs[s.name];
+                        }
+                    })
+                });
         });
     }
 
@@ -127,7 +155,9 @@ class plp {
         a.href = "#";
         a.addEventListener('click', (e) => {
             e.preventDefault();
-            this.removeFilter(model)
+            this.removeFilter(model);
+            // TODO: push this through the event pipe like all the other events
+            this.__applyState(this.state);
         });
         f2.appendChild(a);
         f.appendChild(f2);

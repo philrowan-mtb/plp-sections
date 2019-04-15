@@ -5,17 +5,17 @@
 <div class="row">
     <div class="col-8">
         <h3 class="todo">@Model.ActiveCategory <small class="text-muted todo">(product count)</small></h3>
-        @if (Model.ActiveFilters != null && Model.ActiveFilters.Any())
-        {
-            <ul class="nav nav-pills" id="plp-active-filters">
+        <ul class="nav nav-pills" id="plp-active-filters">
+            @if (Model.ActiveFilters != null && Model.ActiveFilters.Any())
+            {
                 @foreach (var filter in Model.ActiveFilters)
                 {
                     <li class="nav-item" plp-id="@filter.Id">
                         <a class="nav-link" href="#" plp-type="filter" plp-model="@Html.Encode(filter.ClientModel.ToJson())">X | @filter.Value</a>
                     </li>
                 }
-            </ul>
-        }
+            }
+        </ul>
     </div>
     <div class="col-4">
         <select>
