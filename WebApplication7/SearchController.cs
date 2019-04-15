@@ -20,7 +20,7 @@ namespace WebApplication7
 
         public SearchController(IHtmlHelper htmlHelper)
         {
-            _htmlHelper = htmlHelper;            
+            _htmlHelper = htmlHelper;
         }
 
         [HttpGet("")]
@@ -31,15 +31,14 @@ namespace WebApplication7
             var products = s.Search().ToList();
 
             Contextualize();
-            var productsHtml = Render("Sections/ProductsSection", products);            
-
+            var productsHtml = Render("Sections/ProductsSection", products);
             // TODO: render additional sections that need to change and send back the html
 
             return Ok(new
             {
                 sections = new
                 {
-                    products = productsHtml
+                    products = productsHtml                    
                 }
             });
         }
@@ -49,7 +48,7 @@ namespace WebApplication7
             var productsHtml = _htmlHelper.Partial(sectionName, model);
             var sb = new StringBuilder();
             using (var writer = new StringWriter(sb))
-            {                
+            {
                 productsHtml.WriteTo(writer, HtmlEncoder.Default);
             }
 
@@ -61,7 +60,7 @@ namespace WebApplication7
             var viewContext = new ViewContext(ControllerContext, new FakeView(), ViewData, TempData, TextWriter.Null, new HtmlHelperOptions
             {
                 ClientValidationEnabled = false,
-            });            
+            });
             ((IViewContextAware)_htmlHelper).Contextualize(viewContext);
         }
     }

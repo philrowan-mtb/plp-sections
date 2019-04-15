@@ -18,6 +18,17 @@ var plp = /** @class */ (function () {
     plp.prototype.init = function () {
         this.__initSections();
         this.__initFilters();
+        this.__initCategories();
+    };
+    plp.prototype.__initCategories = function () {
+        var _this = this;
+        document.querySelectorAll('a[plp-type=category]').forEach(function (x) {
+            x.addEventListener('click', function (e) {
+                e.preventDefault();
+                var catId = x.getAttribute('plp-model');
+                _this.setCategory(catId);
+            });
+        });
     };
     plp.prototype.__initSections = function () {
         var _this = this;
@@ -88,6 +99,7 @@ var plp = /** @class */ (function () {
                 _this.sections.forEach(function (s) {
                     if (rs.hasOwnProperty(s.name)) {
                         console.log('replacing HTML for section ' + s.name);
+                        // TODO: bug here that is placing the section and the wrapper inside it again;
                         s.el.innerHTML = rs[s.name];
                     }
                 });
@@ -104,6 +116,9 @@ var plp = /** @class */ (function () {
                 var vv = state.filters[f].join('|');
                 q.push('f_' + f + '=' + vv);
             }
+        }
+        if (state.category) {
+            q.push('c=' + state.category);
         }
         var qs = q.join('&');
         console.log(qs);
@@ -145,6 +160,13 @@ var plp = /** @class */ (function () {
         });
         f2.appendChild(a);
         f.appendChild(f2);
+    };
+    plp.prototype.setCategory = function (catId) {
+        // manage state
+        console.log('set category', catId);
+        this.state.category = catId;
+        // manage display
+        this.__applyState(this.state);
     };
     return plp;
 }());

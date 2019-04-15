@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace WebApplication7.Search
 {
     public class Seeker
     {
-        private static IEnumerable<ProductCard> _products = FakeDataGenerator.CreateProducts(100).ToList();
-        private IQueryCollection _query;
+        private static readonly IEnumerable<ProductCard> _products = FakeDataGenerator.CreateProducts(40).ToList();
+        private readonly IQueryCollection _query;
 
         public Seeker(IQueryCollection query) => _query = query;
 
@@ -31,8 +32,11 @@ namespace WebApplication7.Search
                     {
                         model.Facets.Add(new Facet(key.Substring(2), vvv));
                     }
-
                 }
+            }
+            if (_query.ContainsKey("c"))
+            {
+                model.CategoryId = _query["c"];
             }
             return model;
         }
@@ -40,7 +44,15 @@ namespace WebApplication7.Search
         private IEnumerable<ProductCard> Search(SearchModel model)
         {
             var qqq = _products;
-            
+
+            // category
+            if (!string.IsNullOrWhiteSpace(model.CategoryId))
+            {
+                qqq = qqq.Where(x => x.Category.IsInTree(model.CategoryId));
+            }
+
+            // facets
+            // TODO: fix and/or relationship for facets
             foreach (var facetQuery in model.Facets)
             {
                 qqq = qqq.Where(x => x.Facets.Any(f => f.Name == facetQuery.Name && f.Value == facetQuery.Value));
@@ -52,6 +64,7 @@ namespace WebApplication7.Search
         {
             public int ProductCount { get; set; } = 6;
             public IList<Facet> Facets { get; set; } = new List<Facet>();
+            public StringValues CategoryId { get; internal set; }
         }
     }
 }

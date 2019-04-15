@@ -62,6 +62,8 @@ namespace WebApplication7.Search
 
     public class CategoryNode
     {
+        public string Id { get; set; }
+
         public string Title { get; set; }
 
         public CategoryNode Parent { get; set; }
@@ -71,11 +73,12 @@ namespace WebApplication7.Search
         public CategoryNode(CategoryNode parent, string title, params string[] childrenNodeTitles)
             : this(title, childrenNodeTitles)
         {
-            Parent = parent;
+            Parent = parent;            
         }
 
         public CategoryNode(string title, params string[] childrenNodeTitles)
         {
+            Id = title.Replace(" ", "").ToLower();
             Title = title;
             Categories = new List<CategoryNode>();
             if (childrenNodeTitles != null)
@@ -92,6 +95,20 @@ namespace WebApplication7.Search
             var node = new CategoryNode(this, title);
             Categories.Add(node);
             return node;
+        }
+
+        public bool IsInTree(string categoryId)
+        {
+            return IsInTreeRecursive(categoryId, this);
+        }
+
+        private static bool IsInTreeRecursive(string categoryId, CategoryNode node)
+        {
+            if (node == null) return false;
+
+            if (node.Id == categoryId) return true;
+
+            return IsInTreeRecursive(categoryId, node.Parent);
         }
     }
 }

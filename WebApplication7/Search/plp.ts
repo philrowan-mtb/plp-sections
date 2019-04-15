@@ -22,11 +22,22 @@ class plp {
     private init() {
         this.__initSections();
         this.__initFilters();
+        this.__initCategories();
+    }
+
+    private __initCategories() {
+        document.querySelectorAll('a[plp-type=category]').forEach(x => {
+            x.addEventListener('click', e => {
+                e.preventDefault();
+                const catId = x.getAttribute('plp-model');
+                this.setCategory(catId);
+            });            
+        });
     }
 
     private __initSections() {
         this.sections = [];
-        document.querySelectorAll('*[plp-section]').forEach(x => {            
+        document.querySelectorAll('*[plp-section]').forEach(x => {
             const sectionName = x.getAttribute('plp-section');
             this.sections.push({
                 el: x,
@@ -101,11 +112,12 @@ class plp {
         fetch(this.apiUrl + '?' + q,
         ).then(response => {
             response.json().then(
-                o => {                    
+                o => {
                     const rs = o.sections as Object;
                     this.sections.forEach(s => {
                         if (rs.hasOwnProperty(s.name)) {
                             console.log('replacing HTML for section ' + s.name);
+                            // TODO: bug here that is placing the section and the wrapper inside it again;
                             s.el.innerHTML = rs[s.name];
                         }
                     });
@@ -122,6 +134,9 @@ class plp {
                 let vv = (state.filters[f] as []).join('|');
                 q.push('f_' + f + '=' + vv);
             }
+        }
+        if (state.category) {
+            q.push('c=' + state.category);
         }
         const qs = q.join('&');
         console.log(qs);
@@ -166,6 +181,15 @@ class plp {
         });
         f2.appendChild(a);
         f.appendChild(f2);
+    }
+
+    setCategory(catId: string) {
+        // manage state
+        console.log('set category', catId);
+        this.state.category = catId;
+        // manage display
+
+        this.__applyState(this.state);
     }
 }
 
