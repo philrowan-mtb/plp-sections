@@ -72,11 +72,11 @@ namespace WebApplication7.Search
             // available filters based on selected category
             results.AvailableFilters = BuildFilters(qqq);
 
-            // facets
-            // TODO: fix and/or relationship for facets
-            foreach (var facetQuery in model.Facets)
+            // facets            
+            var namedFacets = model.Facets.GroupBy(x => x.Name);
+            foreach (var facet in namedFacets)
             {
-                qqq = qqq.Where(x => x.Facets.Any(f => f.Name == facetQuery.Name && f.Value == facetQuery.Value));
+                qqq = qqq.Where(x => x.Facets.Any(f => f.Name == facet.Key && facet.Any(nf => f.Value == nf.Value)));
             }
 
             // sort                        
