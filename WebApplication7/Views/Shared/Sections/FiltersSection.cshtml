@@ -3,12 +3,10 @@
 
 @if (Model != null && Model.Any())
 {
-    <div plp-section="filters">
-        @foreach (var filter in Model)
-        {
-            <div>
-                @await Html.PartialAsync("Sections/FilterSection", filter)
-            </div>
-        }
-    </div>
+    @foreach (var filter in Model)
+    {
+        <div>
+            @await Html.PartialAsync("Sections/FilterSection", filter)
+        </div>
+    }
 }

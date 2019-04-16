@@ -12,7 +12,7 @@
         {
             <li>
                 <label>
-                    <input type="checkbox" plp-id="@option.Id" plp-type="filter" plp-model="@Html.Encode(option.ClientModel.ToJson())" checked="@isActive(option)" />@option.Value
+                    <input type="checkbox" class="form-check-input" plp-id="@option.Id" plp-type="filter" plp-model="@Html.Encode(option.ClientModel.ToJson())" checked="@isActive(option)" />@option.Value
                 </label>
             </li>
         }

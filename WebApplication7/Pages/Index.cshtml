@@ -27,12 +27,16 @@
         <div class="row">
             <div class="col-4">
                 @await Html.PartialAsync("Sections/CategoriesSection", Model.Categories)
-                @await Html.PartialAsync("Sections/FiltersSection", Model.Filters)
+                <div plp-section="filters">
+                    @await Html.PartialAsync("Sections/FiltersSection", Model.Filters)
+                </div>
             </div>
 
             <div class="col-8">
                 @await Html.PartialAsync("Sections/HeaderSection", Model)
-                @await Html.PartialAsync("Sections/ProductsSection", Model.Products)
+                <div plp-section="products" class="row">
+                    @await Html.PartialAsync("Sections/ProductsSection", Model.Products)
+                </div>
                 <div>
                     <button class="btn btn-primary" type="button" plp-type="load-more">Load More</button>
                 </div>
