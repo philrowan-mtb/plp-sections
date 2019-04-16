@@ -6,40 +6,19 @@ namespace WebApplication7.Search
     public class FilterSection
     {
         public string Title { get; set; }
-        public IList<FilterOption> Options { get; set; }
+        public IList<Facet> Options { get; set; }
 
         public FilterSection(string title, params string[] options)
         {
             Title = title;
-            Options = new List<FilterOption>();
+            Options = new List<Facet>();
             if (options != null)
             {
                 foreach (var option in options)
                 {
-                    Options.Add(new FilterOption(title, option));
+                    Options.Add(new Facet(title, option));
                 }
             }
-        }
-    }
-
-    public class FilterOption
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public object ClientModel { get; }
-        
-        public FilterOption(string filterName, string filterValue)
-        {
-            Id = Guid.NewGuid();
-            Name = filterName;
-            Value = filterValue;
-            ClientModel = new
-            {
-                name = Name,
-                value = Value,
-                id = Id
-            };
         }
     }
 

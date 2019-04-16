@@ -33,7 +33,7 @@ namespace WebApplication7
 
             Contextualize();
             var productsHtml = Render("Sections/ProductsSection", products);
-            var activeFiltersHtml = Render("Sections/ActiveFiltersSection", results.ParsedQueryModel.Facets.Select(x => new FilterOption(x.Name, x.Value)));
+            var activeFiltersHtml = Render("Sections/ActiveFiltersSection", results.ParsedQueryModel.Facets);
             // TODO: render additional sections that need to change and send back the html
 
             return Ok(new

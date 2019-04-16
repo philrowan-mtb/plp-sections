@@ -1,8 +1,7 @@
 ﻿
 interface FilterModel {
     name: string;
-    value: string;
-    id: string;
+    value: string;    
 }
 
 interface SectionModel {
@@ -94,7 +93,13 @@ class plp {
         filters.forEach(x => {
             x.addEventListener('change', (e) => {
                 console.debug('filter changed...');
-                const model = this.__getPLPModel<FilterModel>(e);
+                const t = e.target as HTMLElement;
+                const name = t.getAttribute('plp-filter-name');
+                const value = t.getAttribute('plp-filter-value');
+                const model = {
+                    name,
+                    value
+                };
                 if ((e.target as HTMLInputElement).checked) {
                     this.addFilter(model);
                 } else {
@@ -109,17 +114,17 @@ class plp {
             x.addEventListener('click', (e) => {
                 console.log('remove filter ', e);
                 e.preventDefault();
-                const model = this.__getPLPModel<FilterModel>(e);
+                const t = e.target as HTMLElement;
+                const name = t.getAttribute('plp-filter-name');
+                const value = t.getAttribute('plp-filter-value');
+                const model = {
+                    name,
+                    value
+                };
                 this.removeFilter(model);
             });
         });
     }    
-
-    private __getPLPModel<TModel>(e): TModel {
-        const model = (e.target as HTMLElement).getAttribute('plp-model');
-        const eventDataJson = decodeHTMLEntities(model);
-        return JSON.parse(eventDataJson) as TModel;
-    }
 
     private __applyState(state: any) {
         var q = this.__convertToParams(state);
@@ -172,8 +177,7 @@ class plp {
     }
 
     removeFilter(model: FilterModel) {
-        console.debug('remove filter', model);
-        debugger;
+        console.debug('remove filter', model);        
         const removeAt = this.state.filters[model.name].indexOf(model.value);
         this.state.filters[model.name].splice(removeAt, 1);
         this.__applyState(this.state);

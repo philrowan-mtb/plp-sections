@@ -69,7 +69,13 @@ var plp = /** @class */ (function () {
         filters.forEach(function (x) {
             x.addEventListener('change', function (e) {
                 console.debug('filter changed...');
-                var model = _this.__getPLPModel(e);
+                var t = e.target;
+                var name = t.getAttribute('plp-filter-name');
+                var value = t.getAttribute('plp-filter-value');
+                var model = {
+                    name: name,
+                    value: value
+                };
                 if (e.target.checked) {
                     _this.addFilter(model);
                 }
@@ -85,15 +91,16 @@ var plp = /** @class */ (function () {
             x.addEventListener('click', function (e) {
                 console.log('remove filter ', e);
                 e.preventDefault();
-                var model = _this.__getPLPModel(e);
+                var t = e.target;
+                var name = t.getAttribute('plp-filter-name');
+                var value = t.getAttribute('plp-filter-value');
+                var model = {
+                    name: name,
+                    value: value
+                };
                 _this.removeFilter(model);
             });
         });
-    };
-    plp.prototype.__getPLPModel = function (e) {
-        var model = e.target.getAttribute('plp-model');
-        var eventDataJson = decodeHTMLEntities(model);
-        return JSON.parse(eventDataJson);
     };
     plp.prototype.__applyState = function (state) {
         var _this = this;
@@ -146,7 +153,6 @@ var plp = /** @class */ (function () {
     };
     plp.prototype.removeFilter = function (model) {
         console.debug('remove filter', model);
-        debugger;
         var removeAt = this.state.filters[model.name].indexOf(model.value);
         this.state.filters[model.name].splice(removeAt, 1);
         this.__applyState(this.state);

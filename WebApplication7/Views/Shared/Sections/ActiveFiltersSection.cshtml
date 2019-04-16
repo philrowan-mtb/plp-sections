@@ -1,12 +1,12 @@
-﻿@model IEnumerable<FilterOption>
+﻿@model IEnumerable<Facet>
 
     <ul class="nav nav-pills" id="plp-active-filters">
         @if (Model != null && Model.Any())
         {
-            @foreach (var filter in Model)
+            @foreach (var facet in Model)
             {
-                <li class="nav-item" plp-id="@filter.Id">
-                    <a class="nav-link active" href="#" plp-type="filter" plp-model="@Html.Encode(filter.ClientModel.ToJson())">X | @filter.Value</a>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" plp-type="filter" plp-filter-name="@facet.Name" plp-filter-value="@facet.Value">X | @facet.Value</a>
                 </li>
             }
         }

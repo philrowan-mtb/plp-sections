@@ -13,7 +13,7 @@ namespace WebApplication7.Pages
         public IList<ProductCard> Products { get; set; }
         public CategorySection Categories { get; set; }
         public IEnumerable<FiltersViewModel> Filters { get; set; }
-        public IList<FilterOption> ActiveFilters { get; set; }
+        public IList<Facet> ActiveFilters { get; set; }
         public SortOption ActiveSort { get; set; }
         public IList<SortOption> AvailableSort { get; set; }
         public string ActiveCategory { get; set; }
@@ -33,7 +33,7 @@ namespace WebApplication7.Pages
             // then only the Red color filter will appear.
 
             BuildCategories(results.ParsedQueryModel.CategoryId);
-            BuildFilters(results.AvailableFilters);
+            BuildFilters(results);
             BuildSort();
             BuildState(results.ParsedQueryModel);
         }
@@ -56,14 +56,13 @@ namespace WebApplication7.Pages
             }
         }
 
-        private void BuildFilters(IEnumerable<FilterSection> availableFilters)
+        private void BuildFilters(SearchResults results)
         {
-            // TODO: build active filters from query string
-            ActiveFilters = new List<FilterOption>();
-
-            Filters = availableFilters.Select(x => new FiltersViewModel
+            var activeFilters = results.ParsedQueryModel.Facets.ToList();        
+            ActiveFilters = activeFilters;
+            Filters = results.AvailableFilters.Select(x => new FiltersViewModel
             {
-                ActiveFilters = ActiveFilters,
+                ActiveFilters = activeFilters,
                 Section = x
             });
         }

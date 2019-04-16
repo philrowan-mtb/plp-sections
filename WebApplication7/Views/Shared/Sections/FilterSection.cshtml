@@ -1,36 +1,20 @@
 ﻿@model FiltersViewModel
 
 @functions {
-    bool isActive(FilterOption o) => Model.ActiveFilters.Any(x => x.Id == o.Id);
+    bool isActive(Facet o) => Model.ActiveFilters.Any(x => x.Name == o.Name && x.Value == o.Value);
 }
 
 @if (Model != null && Model.Section != null && Model.Section.Options != null && Model.Section.Options.Any())
 {
     <h3>@Model.Section.Title</h3>
     <ul>
-        @foreach (var option in Model.Section.Options)
+        @foreach (var facet in Model.Section.Options)
         {
             <li>
                 <label>
-                    <input type="checkbox" class="form-check-input" plp-id="@option.Id" plp-type="filter" plp-model="@Html.Encode(option.ClientModel.ToJson())" checked="@isActive(option)" />@option.Value
+                    <input type="checkbox" class="form-check-input" plp-type="filter" plp-filter-name="@facet.Name" plp-filter-value="@facet.Value" checked="@isActive(facet)" />@facet.Value
                 </label>
             </li>
         }
-        @*
-            ALternate 1: write a JSON object directly containing this Id and the metadata needed. render it with state from the server
-            {
-                filters: {
-                    <@option.Id>: {
-                            name: 'Color',
-                            value: 'Red'
-                        }
-                }
-            }
-            and pick from this object based on the id to get the filter data needed on the client. 
-            PROS: 
-                less html and JSON parsing and manipulation on the client.
-                If new filter is added on the client, just add/remove to this array
-                html elements created dynamically for the applied filters section just need 1 custom attribute then
-        *@
     </ul>
 }
