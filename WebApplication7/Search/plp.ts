@@ -29,6 +29,15 @@ class plp {
         this.__initFilters();
         this.__initSort();
         this.__initCategories();
+        this.__initLoadMore();
+    }
+
+    __initLoadMore() {
+        document.querySelector('button[plp-type="load-more"]')
+            .addEventListener('click', () => {
+                this.state.productCount += 3;
+                this.__applyState(this.state);
+            });
     }
 
     __initSort() {
@@ -91,8 +100,7 @@ class plp {
         });
     }
 
-    public onRemoveFilterClick(e) {
-        console.log('active filter removed...');
+    public onRemoveFilterClick(e) {        
         // stop anchor from updating url
         e.preventDefault();
         const model = this.__getPLPModel<FilterModel>(e);        
@@ -126,6 +134,7 @@ class plp {
     }
 
     private __convertToParams(state: any) {
+        // TODO: url encoding
         let q = [];
         if (state.filters) {
             for (let f of Object.getOwnPropertyNames(state.filters)) {
@@ -139,6 +148,9 @@ class plp {
         if (state.sort) {
             q.push('s_p=' + state.sort.property);
             q.push('s_d=' + state.sort.direction);
+        }
+        if (state.productCount) {
+            q.push('pc=' + state.productCount);
         }
         const qs = q.join('&');
         console.debug('state param encoded', qs);

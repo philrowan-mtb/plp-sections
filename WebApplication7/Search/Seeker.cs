@@ -49,6 +49,14 @@ namespace WebApplication7.Search
                     model.SortDirection = _query["s_d"];
                 }
             }
+            // product count
+            if (_query.ContainsKey("pc"))
+            {
+                if (int.TryParse(_query["pc"], out var productCount))
+                {
+                    model.ProductCount = productCount;
+                }
+            }
             return model;
         }
 
@@ -124,7 +132,7 @@ namespace WebApplication7.Search
 
     public class SearchModel
     {
-        public int ProductCount { get; set; } = 20;
+        public int ProductCount { get; set; } = 9;
         public IList<Facet> Facets { get; set; } = new List<Facet>();
         public string CategoryId { get; set; }
         public string SortDirection { get; set; } = "desc";

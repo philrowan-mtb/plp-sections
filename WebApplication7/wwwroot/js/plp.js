@@ -9,6 +9,15 @@ var plp = /** @class */ (function () {
         this.__initFilters();
         this.__initSort();
         this.__initCategories();
+        this.__initLoadMore();
+    };
+    plp.prototype.__initLoadMore = function () {
+        var _this = this;
+        document.querySelector('button[plp-type="load-more"]')
+            .addEventListener('click', function () {
+            _this.state.productCount += 3;
+            _this.__applyState(_this.state);
+        });
     };
     plp.prototype.__initSort = function () {
         var _this = this;
@@ -71,7 +80,6 @@ var plp = /** @class */ (function () {
         });
     };
     plp.prototype.onRemoveFilterClick = function (e) {
-        console.log('active filter removed...');
         // stop anchor from updating url
         e.preventDefault();
         var model = this.__getPLPModel(e);
@@ -101,6 +109,7 @@ var plp = /** @class */ (function () {
         });
     };
     plp.prototype.__convertToParams = function (state) {
+        // TODO: url encoding
         var q = [];
         if (state.filters) {
             for (var _i = 0, _a = Object.getOwnPropertyNames(state.filters); _i < _a.length; _i++) {
@@ -115,6 +124,9 @@ var plp = /** @class */ (function () {
         if (state.sort) {
             q.push('s_p=' + state.sort.property);
             q.push('s_d=' + state.sort.direction);
+        }
+        if (state.productCount) {
+            q.push('pc=' + state.productCount);
         }
         var qs = q.join('&');
         console.debug('state param encoded', qs);

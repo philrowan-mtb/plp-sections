@@ -96,7 +96,8 @@ namespace WebApplication7.Pages
             {
                 filters,
                 model,
-                category = model.CategoryId
+                category = model.CategoryId,
+                productCount = model.ProductCount
             };
 
             State = state;
