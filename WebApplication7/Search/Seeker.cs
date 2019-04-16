@@ -132,7 +132,7 @@ namespace WebApplication7.Search
 
     public class SearchModel
     {
-        public int ProductCount { get; set; } = 9;
+        public int ProductCount { get; set; } = 1;
         public IList<Facet> Facets { get; set; } = new List<Facet>();
         public string CategoryId { get; set; }
         public string SortDirection { get; set; } = "desc";

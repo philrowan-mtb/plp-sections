@@ -3,19 +3,29 @@ var plp = /** @class */ (function () {
         this.apiUrl = 'http://localhost:5000/api/search/';
         this.state = state;
         this.init();
+        this.options = {
+            loadMoreCount: 1
+        };
     }
     plp.prototype.init = function () {
         this.__initSections();
         this.__initFilters();
+        this.__initActiveFilters();
         this.__initSort();
         this.__initCategories();
         this.__initLoadMore();
+    };
+    plp.prototype.__bindSection = function (sectionName) {
+        switch (sectionName) {
+            case 'activeFilters':
+                this.__initActiveFilters();
+        }
     };
     plp.prototype.__initLoadMore = function () {
         var _this = this;
         document.querySelector('button[plp-type="load-more"]')
             .addEventListener('click', function () {
-            _this.state.productCount += 3;
+            _this.state.productCount += _this.options.loadMoreCount;
             _this.__applyState(_this.state);
         });
     };
@@ -25,7 +35,6 @@ var plp = /** @class */ (function () {
             .addEventListener('change', function (e) {
             var s = e.target;
             var o = s.selectedOptions.item(0);
-            console.debug(o);
             var p = o.getAttribute('plp-sort-property');
             var d = o.getAttribute('plp-sort-dir');
             _this.setSort({ property: p, direction: d });
@@ -51,7 +60,6 @@ var plp = /** @class */ (function () {
                 name: sectionName,
             });
         });
-        console.log('sections', this.sections);
     };
     // hookup event handlers to filters
     plp.prototype.__initFilters = function () {
@@ -60,7 +68,7 @@ var plp = /** @class */ (function () {
         // bind change to any filter check boxes
         filters.forEach(function (x) {
             x.addEventListener('change', function (e) {
-                console.log('filter changed...');
+                console.debug('filter changed...');
                 var model = _this.__getPLPModel(e);
                 if (e.target.checked) {
                     _this.addFilter(model);
@@ -70,20 +78,17 @@ var plp = /** @class */ (function () {
                 }
             });
         });
-        // bind click to existing active filters coming from the server
-        // todo: bind higher in the DOM and use event targeting strategy to decide what to do.
-        // PROS: 1 click handler per type (filter check, active filter, etc.) means we can bind the DOM once and let events bubble so we do not have to hookup events 
-        // when new elements are added client side
-        var activeFilters = document.querySelectorAll('#plp-active-filters a[plp-type=filter]');
-        activeFilters.forEach(function (x) {
-            x.addEventListener('click', function (e) { return _this.onRemoveFilterClick(e); });
-        });
     };
-    plp.prototype.onRemoveFilterClick = function (e) {
-        // stop anchor from updating url
-        e.preventDefault();
-        var model = this.__getPLPModel(e);
-        this.removeFilter(model);
+    plp.prototype.__initActiveFilters = function () {
+        var _this = this;
+        document.querySelectorAll('*[plp-section=activeFilters] a[plp-type=filter]').forEach(function (x) {
+            x.addEventListener('click', function (e) {
+                console.log('remove filter ', e);
+                e.preventDefault();
+                var model = _this.__getPLPModel(e);
+                _this.removeFilter(model);
+            });
+        });
     };
     plp.prototype.__getPLPModel = function (e) {
         var model = e.target.getAttribute('plp-model');
@@ -98,9 +103,16 @@ var plp = /** @class */ (function () {
                 var rs = o.sections;
                 _this.sections.forEach(function (s) {
                     if (rs.hasOwnProperty(s.name)) {
-                        console.log('replacing HTML for section ' + s.name);
-                        // TODO: bug here that is placing the section and the wrapper inside it again;
-                        s.el.innerHTML = rs[s.name];
+                        console.debug('replacing HTML for section ' + s.name);
+                        if (typeof rs[s.name] == 'string') {
+                            s.el.innerHTML = rs[s.name];
+                        }
+                        else {
+                            s.el.innerHTML = rs[s.name].html;
+                            if (rs[s.name].bind) {
+                                _this.__bindSection(s.name);
+                            }
+                        }
                     }
                 });
                 var url = location.origin + location.pathname + '?' + q;
@@ -133,40 +145,16 @@ var plp = /** @class */ (function () {
         return qs;
     };
     plp.prototype.removeFilter = function (model) {
-        console.log('remove filter', model);
-        // manage state        
+        console.debug('remove filter', model);
+        debugger;
         var removeAt = this.state.filters[model.name].indexOf(model.value);
-        this.state.filters[model.name] = this.state.filters[model.name].splice(removeAt, 0);
-        // manage display                   
-        var af = document.querySelector('#plp-active-filters *[plp-id="' + model.id + '"]');
-        if (af)
-            af.remove();
-        var fi = document.querySelector('#plp-available-filters input[plp-id="' + model.id + '"]');
-        if (fi)
-            fi.checked = false;
+        this.state.filters[model.name].splice(removeAt, 1);
         this.__applyState(this.state);
     };
     plp.prototype.addFilter = function (model) {
-        var _this = this;
-        // manage state
-        console.log('add filter', model);
+        console.debug('add filter', model);
         this.state.filters[model.name] = this.state.filters[model.name] || [];
         this.state.filters[model.name].push(model.value);
-        // manage display
-        var f = document.getElementById('plp-active-filters');
-        var f2 = document.createElement('li');
-        f2.setAttribute('plp-id', model.id);
-        f2.classList.add('nav-item');
-        var a = document.createElement('a');
-        a.classList.add('nav-link');
-        a.innerHTML = 'X | ' + model.value;
-        a.href = "#";
-        a.addEventListener('click', function (e) {
-            e.preventDefault();
-            _this.removeFilter(model);
-        });
-        f2.appendChild(a);
-        f.appendChild(f2);
         this.__applyState(this.state);
     };
     plp.prototype.setCategory = function (catId) {
