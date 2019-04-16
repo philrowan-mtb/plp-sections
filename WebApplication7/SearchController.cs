@@ -28,7 +28,8 @@ namespace WebApplication7
         public IActionResult Get()
         {
             var s = new Seeker(Request.Query);
-            var products = s.Search().ToList();
+            var results = s.Search();
+            var products = results.Products.ToList();
 
             Contextualize();
             var productsHtml = Render("Sections/ProductsSection", products);

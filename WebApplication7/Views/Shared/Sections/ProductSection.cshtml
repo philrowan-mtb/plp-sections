@@ -4,12 +4,13 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">@Model.Name</h5>
-            <span color="#ff2355">@Model.Price.ToString("C")</span>            
+            <span color="#ff2355">@Model.Price.ToString("C")</span>
             @foreach (var f in Model.Facets)
             {
                 <p>@f.Name : @f.Value</p>
             }
-            <p>@Model.Category.Title</p>
+            <p>Category: @Model.Category.Title</p>
+            <p>New On: @Model.DateAddedToStore.ToString("yyyy-MM-dd")</p>
         </div>
     </div>
 </div>

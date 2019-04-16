@@ -10,6 +10,11 @@ interface SectionModel {
     el: Element
 }
 
+interface SortModel {
+    property: string;
+    direction: 'asc' | 'desc';
+}
+
 class plp {
     private readonly state: any;
     private readonly apiUrl = 'http://localhost:5000/api/search/';
@@ -22,7 +27,20 @@ class plp {
     private init() {
         this.__initSections();
         this.__initFilters();
+        this.__initSort();
         this.__initCategories();
+    }
+
+    __initSort() {
+        document.querySelector('select[plp-type=sort]')
+            .addEventListener('change', e => {
+                const s = e.target as HTMLSelectElement;
+                const o = s.selectedOptions.item(0);
+                console.debug(o);
+                const p = o.getAttribute('plp-sort-property');
+                const d = o.getAttribute('plp-sort-dir') as ('asc' | 'desc');
+                this.setSort({ property: p, direction: d });
+            });
     }
 
     private __initCategories() {
@@ -48,19 +66,18 @@ class plp {
     }
 
     // hookup event handlers to filters
-    private __initFilters() {
-        const filters = document.querySelectorAll('#plp-available-filters input[plp-type=filter]');
+    private __initFilters() {        
+        const filters = document.querySelectorAll('*[plp-section=filters] input[plp-type=filter]');
         // bind change to any filter check boxes
         filters.forEach(x => {
             x.addEventListener('change', (e) => {
                 console.log('filter changed...');
                 const model = this.__getPLPModel<FilterModel>(e);
-                const detail = {
-                    ...model,
-                    filterRemoved: !e.target['checked'],
-                    filterAdded: e.target['checked']
-                };
-                this.__handleEvent('filter-changed', detail);
+                if ((e.target as HTMLInputElement).checked) {
+                    this.addFilter(model);
+                } else {
+                    this.removeFilter(model);
+                }                
             });
         });
 
@@ -78,33 +95,14 @@ class plp {
         console.log('active filter removed...');
         // stop anchor from updating url
         e.preventDefault();
-        const model = this.__getPLPModel<FilterModel>(e);
-        const detail = {
-            ...model,
-            filterRemoved: true,
-            filterAdded: false
-        };
-        this.__handleEvent('filter-changed', detail);
+        const model = this.__getPLPModel<FilterModel>(e);        
+        this.removeFilter(model);
     }
 
     private __getPLPModel<TModel>(e): TModel {
         const model = (e.target as HTMLElement).getAttribute('plp-model');
         const eventDataJson = decodeHTMLEntities(model);
         return JSON.parse(eventDataJson) as TModel;
-    }
-
-    private __handleEvent(eventName: string, eventData: any) {
-        switch (eventName) {
-            case 'filter-changed':
-                if (eventData.filterAdded) {
-                    this.addFilter(eventData as FilterModel);
-                } else {
-                    this.removeFilter(eventData as FilterModel);
-                }
-                break;
-        }
-
-        this.__applyState(this.state);
     }
 
     private __applyState(state: any) {
@@ -137,9 +135,13 @@ class plp {
         }
         if (state.category) {
             q.push('c=' + state.category);
+        }        
+        if (state.sort) {
+            q.push('s_p=' + state.sort.property);
+            q.push('s_d=' + state.sort.direction);
         }
         const qs = q.join('&');
-        console.log(qs);
+        console.debug('state param encoded', qs);
         return qs;
     }
 
@@ -155,7 +157,7 @@ class plp {
 
         const fi = document.querySelector('#plp-available-filters input[plp-id="' + model.id + '"]');
         if (fi) (fi as HTMLInputElement).checked = false;
-
+        this.__applyState(this.state);
     }
 
     addFilter(model: FilterModel) {
@@ -175,20 +177,22 @@ class plp {
         a.href = "#";
         a.addEventListener('click', (e) => {
             e.preventDefault();
-            this.removeFilter(model);
-            // TODO: push this through the event pipe like all the other events
-            this.__applyState(this.state);
+            this.removeFilter(model);            
         });
         f2.appendChild(a);
         f.appendChild(f2);
+        this.__applyState(this.state);
     }
 
-    setCategory(catId: string) {
-        // manage state
-        console.log('set category', catId);
-        this.state.category = catId;
-        // manage display
+    setCategory(catId: string) {        
+        console.debug('set category', catId);
+        this.state.category = catId;        
+        this.__applyState(this.state);
+    }
 
+    setSort(model: SortModel) {
+        console.debug('set sort', model)
+        this.state.sort = model;
         this.__applyState(this.state);
     }
 }
@@ -198,7 +202,7 @@ var _plp;
 window.addEventListener('DOMContentLoaded', () => {
     let stateJson = document.getElementById('plp-state').innerText;
     const state = JSON.parse(stateJson);
-    console.log('INITIAL STATE', state);
+    console.debug('INITIAL STATE', state);
     _plp = new plp(state);
 });
 

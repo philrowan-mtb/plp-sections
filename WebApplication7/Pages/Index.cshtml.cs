@@ -17,57 +17,49 @@ namespace WebApplication7.Pages
         public SortOption ActiveSort { get; set; }
         public IList<SortOption> AvailableSort { get; set; }
         public string ActiveCategory { get; set; }
+        public int TotalProductsCount { get; set; }
 
         public object State { get; set; }
 
         public void OnGet()
         {
             var s = new Seeker(Request.Query);
-            Products = s.Search().ToList();
-
-            
-            BuildCategories();
-
-
+            var results = s.Search();
+            Products = results.Products.ToList();
+            TotalProductsCount = results.TotalProductsCount;
             // TODO: filters need to parse/compute before the list of products is actually filtered. 
             // we need to show all the filters in the category. with this approach I'm just showing the filters
             // available for the returned set of products. if those products are already filtered to e.g. Color=Red
             // then only the Red color filter will appear.
 
-            BuildFilters();
+            BuildCategories(results.ParsedQueryModel.CategoryId);
+            BuildFilters(results.AvailableFilters);
             BuildSort();
-            BuildState();
+            BuildState(results.ParsedQueryModel);
         }
 
-        private void BuildCategories()
+        private void BuildCategories(string categoryId)
         {
             Categories = new CategorySection();
-            var pcs = Products.Select(x => x.Category).Select(x => x.Parent);                
+            var pcs = Products.Select(x => x.Category).Select(x => x.Parent);
             foreach (var pc in pcs)
             {
                 if (Categories.Categories.Contains(pc))
                 {
                     continue;
                 }
+                if (pc.Id == categoryId)
+                {
+                    ActiveCategory = pc.Title;
+                }
                 Categories.Add(pc);
-            }            
+            }
         }
 
-        private void BuildFilters()
+        private void BuildFilters(IEnumerable<FilterSection> availableFilters)
         {
-            var availableFilters = new List<FilterSection>();
-
-            var facetGroups = Products.SelectMany(x => x.Facets)
-                .GroupBy(x => x.Name);
-
-            foreach (var facetName in facetGroups)
-            {
-                var uniqueValues = facetName.Select(x => x.Value).Distinct().ToArray();
-                availableFilters.Add(new FilterSection(facetName.Key, uniqueValues));
-            }
-
             // TODO: build active filters from query string
-            ActiveFilters = new List<FilterOption>();            
+            ActiveFilters = new List<FilterOption>();
 
             Filters = availableFilters.Select(x => new FiltersViewModel
             {
@@ -88,15 +80,23 @@ namespace WebApplication7.Pages
             };
         }
 
-        private void BuildState()
+        private void BuildState(SearchModel model)
         {
-            var filters = ActiveFilters
+            var filters = model.Facets
                 .GroupBy(x => x.Name)
                 .ToDictionary(x => x.Key, x => x.Select(y => y.Value).ToArray());
 
+            var sort = new
+            {
+                property = model.SortProperty,
+                direction = model.SortDirection
+            };
+
             var state = new
             {
-                filters
+                filters,
+                model,
+                category = model.CategoryId
             };
 
             State = state;
