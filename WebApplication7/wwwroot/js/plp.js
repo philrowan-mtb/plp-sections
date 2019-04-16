@@ -19,6 +19,10 @@ var plp = /** @class */ (function () {
         switch (sectionName) {
             case 'activeFilters':
                 this.__initActiveFilters();
+                break;
+            case 'filters':
+                this.__initFilters();
+                break;
         }
     };
     plp.prototype.__initLoadMore = function () {

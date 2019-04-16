@@ -5,9 +5,6 @@
 <div class="row">
     <div class="col-8">
         <h4><span class="todo">@Model.ActiveCategory</span> <small class="text-muted">(@Model.TotalProductsCount)</small></h4>
-        <div plp-section="activeFilters">
-            @await  Html.PartialAsync("Sections/ActiveFiltersSection", Model.ActiveFilters)            
-        </div>
     </div>
     <div class="col-4">
         <select plp-type="sort" class="form-control todo">
@@ -17,4 +14,7 @@
             }
         </select>
     </div>
+</div>
+<div class="row" plp-section="activeFilters">
+    @await Html.PartialAsync("Sections/ActiveFiltersSection", Model.ActiveFilters)
 </div>

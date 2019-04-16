@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using WebApplication7.Search;
+using WebApplication7.Views.Shared.Sections;
 
 namespace WebApplication7
 {
@@ -31,22 +33,36 @@ namespace WebApplication7
             var results = s.Search();
             var products = results.Products.ToList();
 
+            // this has to be called because IHtmlHelper is meant to work inside a view but not really meant to work inside a controller
             Contextualize();
-            var productsHtml = Render("Sections/ProductsSection", products);
-            var activeFiltersHtml = Render("Sections/ActiveFiltersSection", results.ParsedQueryModel.Facets);
-            // TODO: render additional sections that need to change and send back the html
 
-            return Ok(new
+            // TODO: render additional sections that need to change and send back the             
+            return base.Ok(new
             {
                 sections = new
                 {
-                    products = productsHtml,
+                    products = Render("Sections/ProductsSection", products),
                     activeFilters = new
                     {
-                        html = activeFiltersHtml,
+                        html = Render("Sections/ActiveFiltersSection", results.ParsedQueryModel.Facets),
+                        bind = true
+                    },
+                    filters = new
+                    {
+                        html = Render("Sections/FiltersSection", BuildFilters(results)),
                         bind = true
                     }
                 }
+            });
+        }
+
+        private IEnumerable<FiltersViewModel> BuildFilters(SearchResults results)
+        {
+            var activeFilters = results.ParsedQueryModel.Facets.ToList();            
+            return results.AvailableFilters.Select(x => new FiltersViewModel
+            {
+                ActiveFilters = activeFilters,
+                Section = x
             });
         }
 

@@ -43,6 +43,10 @@ class plp {
         switch (sectionName) {
             case 'activeFilters':
                 this.__initActiveFilters();
+                break;
+            case 'filters':
+                this.__initFilters();
+                break;
         }
     }
 
